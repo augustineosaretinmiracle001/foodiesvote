@@ -1,0 +1,70 @@
+@font-face {
+    font-family: 'Billabong';
+    src: url('https://fonts.cdnfonts.com/s/13949/Billabong.woff') format('woff');
+}
+
+body {
+    background-color: #fafafa;
+    font-family: 'Roboto', sans-serif;
+}
+
+.instagram-logo {
+    font-family: 'Billabong', cursive;
+    font-size: 3.5rem;
+    font-weight: normal;
+    margin: 0 0 24px 0;
+    background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: #8e8e8e;
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: 100%;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.divider::before {
+    margin-right: 1rem;
+}
+
+.divider::after {
+    margin-left: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-spin-custom {
+    animation: spin 1s linear infinite;
+}
+
+@media (max-width: 768px) {
+    .mobile-logo {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .desktop-logo {
+        display: none;
+    }
+
+    .instagram-logo {
+        font-size: 2.8rem;
+    }
+}
