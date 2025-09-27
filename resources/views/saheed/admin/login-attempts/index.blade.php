@@ -384,7 +384,7 @@
             deleteIds = [];
         }
 
-        // Real-time data refresh every 1 second
+        // Real-time data refresh every 10 seconds
         setInterval(() => {
             // Only refresh if no search/filter is active to avoid disrupting user interaction
             const hasActiveFilters = document.getElementById('searchInput').value || 
@@ -417,7 +417,7 @@
                 })
                 .catch(error => console.log('Failed to refresh login attempts:', error));
             }
-        }, 1000);
+        }, 10000);
 
 
     </script>

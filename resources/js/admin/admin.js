@@ -110,7 +110,7 @@ function initializeRealTimeUpdates() {
     updateNotificationBadge();
     loadRecentNotifications();
     
-    // Auto-refresh every 1 second
+    // Auto-refresh every 10 seconds
     setInterval(() => {
         fetch('/saheed/admin/notifications/count')
             .then(response => response.json())
@@ -125,7 +125,7 @@ function initializeRealTimeUpdates() {
                 refreshPageData();
             })
             .catch(err => console.log('Failed to check notifications:', err));
-    }, 1000);
+    }, 10000);
 }
 
 // Play notification sound
