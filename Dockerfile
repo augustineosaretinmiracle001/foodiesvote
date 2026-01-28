@@ -10,29 +10,21 @@ RUN apk add --no-cache \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy nginx config
-COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
-
 WORKDIR /var/www/html
 
-# Copy composer files first
-COPY composer.json composer.lock ./
-
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Copy package files
-COPY package*.json ./
-RUN npm install
-
-# Copy all application files
+# Copy ALL files first
 COPY . .
 
-# Run post-install scripts and build assets
-RUN composer run-script post-autoload-dump
-RUN npm run build
+# Copy nginx config after copying all files
+COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
 
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install && npm run build
+
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod +x artisan
 
 EXPOSE 80 9000
 
