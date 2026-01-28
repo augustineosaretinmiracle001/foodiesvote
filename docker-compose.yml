@@ -15,6 +15,7 @@ services:
       - hacktools-network
     depends_on:
       - redis
+      - mysql
     environment:
       - APP_ENV=production
       - QUEUE_CONNECTION=redis
@@ -43,6 +44,20 @@ services:
     networks:
       - hacktools-network
 
+  mysql:
+    image: mysql:8.0
+    container_name: hacktools-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: hacktools
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: hacktools
+      MYSQL_PASSWORD: hacktools123
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hacktools-network
+
   queue:
     build:
       context: .
@@ -56,9 +71,13 @@ services:
     depends_on:
       - app
       - redis
+      - mysql
     networks:
       - hacktools-network
 
 networks:
   hacktools-network:
     driver: bridge
+
+volumes:
+  mysql_data:
