@@ -5,6 +5,10 @@ RUN apk add --no-cache \
     npm \
     mysql-client \
     nginx \
+    autoconf \
+    gcc \
+    g++ \
+    make \
     && docker-php-ext-install pdo pdo_mysql \
     && pecl install redis \
     && docker-php-ext-enable redis
