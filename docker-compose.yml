@@ -21,8 +21,6 @@ services:
     image: nginx:alpine
     container_name: hacktools-nginx
     restart: unless-stopped
-    ports:
-      - "80:80"
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
