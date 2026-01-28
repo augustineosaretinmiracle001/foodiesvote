@@ -15,10 +15,22 @@ COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
 
 WORKDIR /var/www/html
 
+# Copy composer files first
+COPY composer.json composer.lock ./
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy package files
+COPY package*.json ./
+RUN npm install
+
+# Copy all application files
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+# Run post-install scripts and build assets
+RUN composer run-script post-autoload-dump
+RUN npm run build
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
