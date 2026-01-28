@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hacktools-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+    networks:
+      - hacktools-network
+    depends_on:
+      - redis
+    environment:
+      - APP_ENV=production
+      - QUEUE_CONNECTION=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - REDIS_HOST=redis
+
+  nginx:
+    image: nginx:alpine
+    container_name: hacktools-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - hacktools-network
+
+  redis:
+    image: redis:alpine
+    container_name: hacktools-redis
+    restart: unless-stopped
+    networks:
+      - hacktools-network
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hacktools-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    depends_on:
+      - app
+      - redis
+    networks:
+      - hacktools-network
+
+networks:
+  hacktools-network:
+    driver: bridge
