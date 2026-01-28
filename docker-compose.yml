@@ -16,12 +16,6 @@ services:
     depends_on:
       - redis
       - mysql
-    environment:
-      - APP_ENV=production
-      - QUEUE_CONNECTION=redis
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-      - REDIS_HOST=redis
 
   nginx:
     image: nginx:alpine
