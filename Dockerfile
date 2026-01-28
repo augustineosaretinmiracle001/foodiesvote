@@ -6,6 +6,9 @@ RUN apk add --no-cache \
     mysql-client \
     && docker-php-ext-install pdo pdo_mysql
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 WORKDIR /var/www/html
 
 COPY . .
