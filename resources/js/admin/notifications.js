@@ -55,6 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function addNotificationToList(event) {
         const notification = document.createElement('div');
         notification.className = 'px-4 py-3 border-b border-gray-200 hover:bg-gray-50';
+        
+        // Escape HTML to prevent XSS
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+        
         notification.innerHTML = `
             <div class="flex items-start space-x-3">
                 <div class="flex-shrink-0">
@@ -62,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900">New Login Attempt</p>
-                    <p class="text-sm text-gray-500">${event.message}</p>
+                    <p class="text-sm text-gray-500">${escapeHtml(event.message || '')}</p>
                     <p class="text-xs text-gray-400">${new Date().toLocaleTimeString()}</p>
                 </div>
             </div>

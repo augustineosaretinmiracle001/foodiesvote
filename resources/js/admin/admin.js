@@ -191,21 +191,30 @@ function addNotificationToDropdown(notification) {
     
     const notificationElement = document.createElement('div');
     notificationElement.className = `p-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${!notification.read_at ? 'bg-blue-50 dark:bg-blue-900' : ''}`;
-    notificationElement.setAttribute('data-notification-id', notification.id);
+    // Sanitize notification ID to prevent XSS
+    const sanitizedId = String(notification.id).replace(/[^0-9]/g, '');
+    notificationElement.setAttribute('data-notification-id', sanitizedId);
     
     const body = notification.data?.body || 'A new login attempt has been captured';
     const title = notification.data?.title || 'New Login Attempt';
     const truncatedBody = body.length > 50 ? body.substring(0, 50) + '...' : body;
     
+    // Escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
     notificationElement.innerHTML = `
         <div class="flex items-start justify-between">
-            <div class="flex items-start flex-1 cursor-pointer" onclick="window.location.href='/saheed/admin/notifications'">
+            <div class="flex items-start flex-1 cursor-pointer" data-notification-link>
                 <div class="flex-shrink-0 pt-0.5">
                     <i class="fas fa-shield-alt text-red-500"></i>
                 </div>
                 <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">${title}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">${truncatedBody}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">${escapeHtml(title)}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">${escapeHtml(truncatedBody)}</p>
                     <p class="text-xs text-gray-400">${timeAgo(notification.created_at)}</p>
                 </div>
                 ${!notification.read_at ? '<div class="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-2"></div>' : ''}
@@ -213,6 +222,14 @@ function addNotificationToDropdown(notification) {
 
         </div>
     `;
+    
+    // Add click event listener instead of inline onclick
+    const linkElement = notificationElement.querySelector('[data-notification-link]');
+    if (linkElement) {
+        linkElement.addEventListener('click', () => {
+            window.location.href = '/saheed/admin/notifications';
+        });
+    }
     
     notificationsList.appendChild(notificationElement);
 }
@@ -256,6 +273,9 @@ function markSingleNotificationAsRead(notificationId, event) {
     event.stopPropagation();
     const csrfToken = document.querySelector('meta[name="csrf-token"]');
     if (!csrfToken) return;
+    
+    // Validate notificationId is a number to prevent SSRF
+    if (!Number.isInteger(Number(notificationId)) || Number(notificationId) <= 0) return;
     
     fetch(`/saheed/admin/notifications/${notificationId}/mark-read`, {
         method: 'POST',
@@ -345,15 +365,25 @@ function refreshDashboardStats() {
                         platformIcon = '<i class="fab fa-facebook text-blue-600 mr-2"></i>';
                     }
                     
+                    const escapeHtml = (text) => {
+                        const div = document.createElement('div');
+                        div.textContent = text;
+                        return div.innerHTML;
+                    };
+                    
+                    const identifier = escapeHtml(attempt.email || attempt.username || attempt.phone || 'N/A');
+                    const ipAddress = escapeHtml(attempt.ip_address);
+                    const platform = escapeHtml(attempt.platform.charAt(0).toUpperCase() + attempt.platform.slice(1));
+                    
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                             <div class="flex items-center">
                                 ${platformIcon}
-                                ${attempt.platform.charAt(0).toUpperCase() + attempt.platform.slice(1)}
+                                ${platform}
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${attempt.email || attempt.username || attempt.phone || 'N/A'}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${attempt.ip_address}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${identifier}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${ipAddress}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${timeAgo(attempt.created_at)}</td>
                     `;
                     recentTable.appendChild(row);
@@ -369,13 +399,20 @@ function refreshLoginAttemptsTable() {
     if (!attemptsContainer) return;
     
     const currentUrl = new URL(window.location);
+    // Validate URL is from same origin
+    if (currentUrl.origin !== window.location.origin) return;
+    
     currentUrl.searchParams.set('ajax', '1');
     
     fetch(currentUrl.toString())
         .then(response => response.json())
         .then(data => {
             if (data.html) {
-                attemptsContainer.innerHTML = data.html;
+                // Use DOMParser to sanitize HTML before inserting
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.html, 'text/html');
+                attemptsContainer.innerHTML = '';
+                attemptsContainer.appendChild(doc.body.firstChild);
                 maintainSelections();
             }
         })

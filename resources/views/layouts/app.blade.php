@@ -6,7 +6,7 @@
     <meta name="google-site-verification" content="yUaUElR8Nl1TgGaNusU9poo0Z8ShjAa0dSlXqRD6EZ0" />
 
     {{-- SEO --}}
-    <title>{{ $title ?? 'Welcome to MiracleVotes' }}</title>
+    <title>{{ $title ?? 'Welcome to Foodies Vote' }}</title>
     <meta name="description" content="{{ $description ?? 'Security Awareness Training Platform - Educational Simulation' }}">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
@@ -22,7 +22,7 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 
     {{-- Open Graph --}}
-    <meta property="og:title" content="{{ $ogTitle ?? 'Vote Now - MiracleVotes' }}">
+    <meta property="og:title" content="{{ $ogTitle ?? 'Vote Now - Foodies Vote' }}">
     <meta property="og:description" content="{{ $ogDescription ?? 'Cast your vote through Facebook or Instagram quickly and easily.' }}">
     <meta property="og:image" content="{{ $ogImage ?? asset('images/og-image.jpg') }}">
     <meta property="og:url" content="{{ url()->current() }}">

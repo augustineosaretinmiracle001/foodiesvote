@@ -9,30 +9,32 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     make \
-    && docker-php-ext-install pdo pdo_mysql \
+    && docker-php-ext-install pdo pdo_mysql opcache \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis opcache
 
-# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy ALL files first
-COPY . .
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-# Copy nginx config after copying all files
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+COPY . .
 COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+RUN composer dump-autoload --optimize --classmap-authoritative \
+    && npm run build \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod +x artisan
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 80 9000
+EXPOSE 80
 
-# Start both nginx and php-fpm
-CMD ["sh", "-c", "nginx && php-fpm"]
+CMD ["sh", "-c", "php artisan migrate --force && nginx && php-fpm"]
