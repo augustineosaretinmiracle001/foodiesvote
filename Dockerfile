@@ -21,7 +21,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY . .
 COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
